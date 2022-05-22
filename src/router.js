@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import axios from "axios";
 import HomePage from "./pages/HomePage.vue";
 import NotFound from "./pages/NotFound.vue";
 import AxiosPage from "./pages/AxiosPage.vue";
@@ -16,6 +17,18 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach(async (to) => {
+  try {
+    await axios.get("/api/whoami");
+  } catch (_) {
+    if (to.path === "/login") {
+      return true;
+    }
+    return "/login";
+  }
+  return true;
 });
 
 export default router;
