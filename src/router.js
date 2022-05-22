@@ -7,11 +7,16 @@ import CityPage from "./pages/CityPage.vue";
 import LoginPage from "./pages/LoginPage.vue";
 
 const routes = [
-  { path: "/", name: "home", component: HomePage },
+  { path: "/", name: "home", component: HomePage, meta: { isPublic: true } },
   { path: "/axios", name: "axios", component: AxiosPage },
   { path: "/city/:cityName", name: "city", component: CityPage, props: true },
-  { path: "/login", name: "login", component: LoginPage },
-  { path: "/:path(.*)", component: NotFound },
+  {
+    path: "/login",
+    name: "login",
+    component: LoginPage,
+    meta: { isPublic: true },
+  },
+  { path: "/:path(.*)", component: NotFound, meta: { isPublic: true } },
 ];
 
 const router = createRouter({
@@ -23,7 +28,7 @@ router.beforeEach(async (to) => {
   try {
     await axios.get("/api/whoami");
   } catch (_) {
-    if (to.path === "/login") {
+    if (to.meta.isPublic) {
       return true;
     }
     return "/login";
